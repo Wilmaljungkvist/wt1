@@ -1,0 +1,15 @@
+{
+  "name": "assignment-wt1",
+  "version": "1.0.0",
+  "description": "In modern web applications, the ability to delegate access between systems is crucial. One widely used standard for access delegation is OAuth (Open Authorization). Although the OAuth flow may appear complex at first glance, it is important to understand the roles and communication of the different stakeholders (client/consumer/service provider) involved.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.lnu.se:1dv027/student/wl222ek/assignment-wt1.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
