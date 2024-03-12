@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "In modern web applications, the ability to delegate access between systems is crucial. One widely used standard for access delegation is OAuth (Open Authorization). Although the OAuth flow may appear complex at first glance, it is important to understand the roles and communication of the different stakeholders (client/consumer/service provider) involved.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "test": "test",
+    "dev": "nodemon --inspect -r dotenv/config src/server.js",
+    "lint": "npx eslint ./src || exit 0"
   },
   "repository": {
     "type": "git",
@@ -19,7 +23,8 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
     "morgan": "^1.10.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.0"
   },
   "devDependencies": {
     "@lnu/eslint-config": "^1.1.10",
