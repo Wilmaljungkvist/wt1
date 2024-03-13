@@ -16,13 +16,13 @@ try {
 
   app.set('view engine', 'ejs')
   app.set('views', join(directoryFullName, 'views'))
-  app.use(expressLayouts)
+  app.use(expressLayouts) 
   app.set('layout', join(directoryFullName, 'views', 'layouts', 'default'))
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))
 
-  app.use('/issues-app/', express.static(join(directoryFullName, '..', 'public')))
+  app.use('/', express.static(join(directoryFullName, '..', 'public')))
 
   const sessionOptions = {
     name: process.env.SESSION_NAME,

@@ -18,7 +18,8 @@ export class HomeController {
    */
   async index (req, res, next) {
     try {
-      res.render('home/index')
+      const loggedUser = true
+      res.render('home/index', { loggedUser })
     } catch (error) {
       console.error('Error occurred:', error)
       res.status(404).send('Not found')
