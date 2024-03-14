@@ -13,4 +13,5 @@
  
  router.get('/', (req, res, next) => controller.index(req, res, next))
  router.get('/redirect', (req, res, next) => controller.login(req, res, next))
+ router.get('/oauth/callback', (req, res, next) => controller.handleAuthorization(req, res, next))
  

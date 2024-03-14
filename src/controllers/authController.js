@@ -27,8 +27,39 @@
    }
 
    async login (req, res, next) {
-    const params = 
-    res.redirect('https://gitlab.lnu.se/oauth/token')
+    const scope = 'read_user'
+    const gitlabAuthUrl = `http://gitlab.lnu.se/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${scope}`
+
+    res.redirect(gitlabAuthUrl)
+
+   }
+
+
+   async handleAuthorization (req, res, next) {
+    const code = req.query.code
+
+    const params = {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      code: code,
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+    const response = await fetch(process.env.GITLAB_AUTH_URI, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to exchange authorization code for access token');
+    }
+
+        const tokenData = await response.json()
+        const accessToken = tokenData.access_token
+        res.redirect('/')
    }
  
  }
