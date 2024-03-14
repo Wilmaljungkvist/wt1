@@ -25,5 +25,10 @@
        res.status(404).send('Not found')
      }
    }
+
+   async login (req, res, next) {
+    const params = 
+    res.redirect('https://gitlab.lnu.se/oauth/token')
+   }
  
  }
