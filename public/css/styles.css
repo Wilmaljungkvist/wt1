@@ -41,7 +41,11 @@
     background-color: #555;
     border-radius: 5px;
   }
-  
+
+  .profile {
+    background-color: rgb(217, 171, 171);
+  }
+
   @media (max-width: 768px) {
     .navbar {
       flex-direction: column;
