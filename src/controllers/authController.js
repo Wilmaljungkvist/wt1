@@ -35,23 +35,23 @@
 
 
    async handleAuthorization (req, res, next) {
-    const code = req.query.code
-    console.log(code)
+    const Returnedcode = req.query.code
 
-    const params = {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      code: code,
-      redirect_uri: process.env.REDIRECT_URI,
-      grant_type: 'authorization_code'
-    }
+    const params = new URLSearchParams();
+    params.append('client_id', process.env.CLIENT_ID);
+    params.append('client_secret', process.env.CLIENT_SECRET);
+    params.append('code', Returnedcode);
+    params.append('redirect_uri', process.env.REDIRECT_URI);
+    params.append('grant_type', 'authorization_code');
 
-    const response = await fetch(process.env.GITLAB_AUTH_URI, {
+    console.log(params)
+
+    const response = await fetch(process.env.GITLAB_TOKEN_URI, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded' // Change content type to application/x-www-form-urlencoded
         },
-        body: JSON.stringify(params)
+        body: params // Send parameters as URLSearchParams
     })
 
     if (!response.ok) {
@@ -62,6 +62,7 @@
     if (contentType && contentType.includes('application/json')) {
         const tokenData = await response.json();
         const accessToken = tokenData.access_token;
+        console.log('AccessToken' + accessToken)
         res.redirect('/');
     } else {
         // Handle HTML response (error)
