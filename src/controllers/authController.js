@@ -11,6 +11,7 @@
  export class AuthController {
 
   #service
+  #tokenData
 
 
   constructor(service) {
@@ -45,12 +46,27 @@
    async handleAuthorization (req, res, next) {
     try {
       const returnedcode = req.query.code
-      const tokenData = await this.#service.exchangeCodeForToken(returnedcode)
-      res.redirect('/auth')
+      this.#tokenData = await this.#service.exchangeCodeForToken(returnedcode)
+      const loggedUser = true
+       res.render('home/index', { loggedUser })
     } catch (error) {
       console.error('Error occurred:', error)
       res.status(500).send('Internal Server Error')
     }
 }
- 
+
+  async showProfile (req, res, next) {
+    console.log(this.#tokenData.access_token)
+    const response = await fetch('https://gitlab.lnu.se/api/v4/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.#tokenData.access_token
+      }
+    })
+    const data = await response.json()
+    console.log(data)
+    const loggedUser = true
+    res.render('layouts/profile', { loggedUser, data })
+  }
  }

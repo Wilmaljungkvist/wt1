@@ -1,7 +1,8 @@
 import fetch from 'node-fetch'
 export class AuthService {
-    async exchangeCodeForToken(code) {
-        const params = new URLSearchParams()
+
+  async exchangeCodeForToken(code) {
+    const params = new URLSearchParams()
     params.append('client_id', process.env.CLIENT_ID)
     params.append('client_secret', process.env.CLIENT_SECRET)
     params.append('code', code);
@@ -14,7 +15,7 @@ export class AuthService {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params
-    });
+    })
 
     if (!response.ok) {
       throw new Error('Failed to exchange authorization code for access token')
@@ -28,5 +29,10 @@ export class AuthService {
       console.error('Error response from OAuth provider:', htmlContent)
       throw new Error('Internal Server Error')
     }
+    }
+
+
+    async profile (accessToken) {
+
     }
 }
