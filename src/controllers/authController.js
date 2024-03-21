@@ -65,7 +65,6 @@
       }
     })
     const data = await response.json()
-    console.log(data)
     const loggedUser = true
     res.render('layouts/profile', { loggedUser, data })
   }

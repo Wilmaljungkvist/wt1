@@ -19,7 +19,14 @@ try {
   const baseURL = process.env.BASE_URL || '/'
 
   app.use(logger('dev'))
-  app.use(helmet())
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'img-src': ["'self'", 'https://secure.gravatar.com'],
+      },
+    },
+  }))
   app.use(httpContext.middleware)
 
   app.set('view engine', 'ejs')
