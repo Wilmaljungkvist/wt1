@@ -1,4 +1,10 @@
+import httpContext from 'express-http-context'
+import { randomUUID } from 'node:crypto'
+import '@lnu/json-js-cycle'
 import express from 'express'
+import helmet from 'helmet'
+
+import { container } from './config/bootstrap.js'
 import expressLayouts from 'express-ejs-layouts'
 import session from 'express-session'
 import logger from 'morgan'
@@ -13,9 +19,12 @@ try {
   const baseURL = process.env.BASE_URL || '/'
 
   app.use(logger('dev'))
+  app.use(helmet())
+  app.use(httpContext.middleware)
 
   app.set('view engine', 'ejs')
   app.set('views', join(directoryFullName, 'views'))
+  app.set('container', container)
   app.use(expressLayouts) 
   app.set('layout', join(directoryFullName, 'views', 'layouts', 'default'))
 

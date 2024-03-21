@@ -9,9 +9,9 @@
  
  export const router = express.Router()
  
- const controller = new AuthController()
+ const resolveAuthController = (req) => req.app.get('container').resolve('TaskController')
  
- router.get('/', (req, res, next) => controller.index(req, res, next))
- router.get('/redirect', (req, res, next) => controller.login(req, res, next))
- router.get('/oauth/callback', (req, res, next) => controller.handleAuthorization(req, res, next))
+ router.get('/', (req, res, next) => resolveAuthController(req).index(req, res, next))
+ router.get('/redirect', (req, res, next) => resolveAuthController(req).login(req, res, next))
+ router.get('/oauth/callback', (req, res, next) => resolveAuthController(req).handleAuthorization(req, res, next))
  

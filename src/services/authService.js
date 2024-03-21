@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 export class AuthService {
     async exchangeCodeForToken(code) {
         const params = new URLSearchParams()

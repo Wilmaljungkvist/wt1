@@ -10,10 +10,12 @@
   */
  export class AuthController {
 
-  constructor() {
-    this.authService = new AuthService()
-  }
+  #service
 
+
+  constructor(service) {
+    this.#service = service
+  }
    /**
     * Renders a view and sends the rendered HTML string as an HTTP response.
     * index GET.
@@ -43,8 +45,7 @@
    async handleAuthorization (req, res, next) {
     try {
       const returnedcode = req.query.code
-      const tokenData = await this.authService.exchangeCodeForToken(returnedcode)
-      console.log(tokenData)
+      const tokenData = await this.#service.exchangeCodeForToken(returnedcode)
       res.redirect('/auth')
     } catch (error) {
       console.error('Error occurred:', error)
