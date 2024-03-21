@@ -31,12 +31,12 @@
     const gitlabAuthUrl = `http://gitlab.lnu.se/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${scope}`
 
     res.redirect(gitlabAuthUrl)
-
    }
 
 
    async handleAuthorization (req, res, next) {
     const code = req.query.code
+    console.log(code)
 
     const params = {
       client_id: process.env.CLIENT_ID,
@@ -45,6 +45,7 @@
       redirect_uri: process.env.REDIRECT_URI,
       grant_type: 'authorization_code'
     }
+
     const response = await fetch(process.env.GITLAB_AUTH_URI, {
         method: 'POST',
         headers: {
@@ -57,9 +58,18 @@
         throw new Error('Failed to exchange authorization code for access token');
     }
 
-        const tokenData = await response.json()
-        const accessToken = tokenData.access_token
-        res.redirect('/')
-   }
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+        const tokenData = await response.json();
+        const accessToken = tokenData.access_token;
+        res.redirect('/');
+    } else {
+        // Handle HTML response (error)
+        const htmlContent = await response.text();
+        console.error('Error response from OAuth provider:', htmlContent);
+        // You can choose to redirect to an error page or send an error message
+        res.status(500).send('Internal Server Error');
+    }
+}
  
  }
