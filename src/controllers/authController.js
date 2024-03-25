@@ -4,7 +4,7 @@
  * @author Wilma Ljungkvist
  */
  import fetch from 'node-fetch'
- import { AuthService } from '../services/authService.js'
+ import { GraphQLClient, gql } from 'graphql-request'
  /**
   * Encapsulates a controller.
   */
@@ -36,9 +36,12 @@
    }
 
    async login (req, res, next) {
-    const scope = 'read_user'
+    const scopes = ['read_user', 'read_api', 'read_repository']
+    // TODO: ADD TRY CATCH 
+    const scope = scopes.join(' ')
     const gitlabAuthUrl = `http://gitlab.lnu.se/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${scope}`
 
+    console.log('Generated GitLab OAuth URL:', gitlabAuthUrl)
     res.redirect(gitlabAuthUrl)
    }
 
@@ -64,6 +67,7 @@
       }
     })
     const data = await response.json()
+    console.log(data)
     const loggedUser = true
     res.render('layouts/profile', { loggedUser, data })
   }
@@ -73,6 +77,8 @@
     let page = 1
     let totalCount = 0
   
+    // TODO: ADD TIME TO LATEST ACTIVE. 
+    // TODO: Avatar (including locally stored and served via gravatar.com).
     while (dataArr.length < 101) {
       console.log(totalCount)
       const response = await fetch(`https://gitlab.lnu.se/api/v4/events?page=${page}&per_page=100`, {
@@ -97,10 +103,66 @@
     const loggedUser = true
     if (dataArr.length > 101) {
       const latestActivities = dataArr.slice(0, 101)
+      for( let i = 0; latestActivities.length > i; i++) {
+        console.log(i + latestActivities[i].author_username)
+      }
       res.render('layouts/activities', { loggedUser, latestActivities })
     } else {
       const latestActivities = dataArr
       res.render('layouts/activities', { loggedUser, latestActivities })
     }
+  }
+
+  async groupProjects (req, res, next) {
+    const graphQLClient = new GraphQLClient('https://gitlab.lnu.se/api/graphql', {
+      headers: {
+        authorization: 'Bearer ' + this.#tokenData.access_token
+      }
+    })
+
+    const query = gql`
+    query {
+      currentUser {
+        groups(first: 6) {
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            id
+            name
+            fullPath
+            avatarUrl
+            path
+              projects(first: 10, includeSubgroups: true) {
+                nodes {
+                    id
+                    name
+                    fullPath
+                    avatarUrl
+                    path
+                    repository {tree {lastCommit {authoredDate author {name username avatarUrl}}}}
+                  projectMembers {       
+                    nodes {
+                      createdBy {
+                        name
+                        avatarUrl
+                        username
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+
+    const response = await graphQLClient.request(query)
+
+    console.log(response)
+    const loggedUser = true
+      res.render('layouts/projects', { loggedUser })
   }
  }

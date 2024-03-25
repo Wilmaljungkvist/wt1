@@ -24,6 +24,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-http-context": "^1.2.4",
     "express-session": "^1.18.0",
+    "graphql-request": "^6.1.0",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.2",

@@ -114,8 +114,3 @@
   .activities tbody tr:nth-child(even) {
     background-color: #f9f9f9;
   }
-  
-  .activities tbody tr:hover {
-    background-color: #e0e0e0;
-  }
-  

@@ -2,10 +2,11 @@ import fetch from 'node-fetch'
 export class AuthService {
 
   async exchangeCodeForToken(code) {
+    // TODO: ADD SECRET STRING FOR LOGIN/KEY!
     const params = new URLSearchParams()
     params.append('client_id', process.env.CLIENT_ID)
     params.append('client_secret', process.env.CLIENT_SECRET)
-    params.append('code', code);
+    params.append('code', code)
     params.append('redirect_uri', process.env.REDIRECT_URI)
     params.append('grant_type', 'authorization_code')
 
