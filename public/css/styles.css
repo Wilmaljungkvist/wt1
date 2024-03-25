@@ -42,10 +42,6 @@
     border-radius: 5px;
   }
 
-  .profile {
-    background-color: rgb(217, 171, 171);
-  }
-
   @media (max-width: 768px) {
     .navbar {
       flex-direction: column;
@@ -56,5 +52,32 @@
       margin-right: 0;
       margin-bottom: 5px;
     }
+  }
+
+
+
+  .profile {
+    background-color: #fff;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .profile p {
+    margin: 5px 0;
+  }
+
+  .profile b {
+    font-weight: bold;
+  }
+
+  img {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
   

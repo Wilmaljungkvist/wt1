@@ -56,7 +56,6 @@
 }
 
   async showProfile (req, res, next) {
-    console.log(this.#tokenData.access_token)
     const response = await fetch('https://gitlab.lnu.se/api/v4/user', {
       method: 'GET',
       headers: {
@@ -67,5 +66,21 @@
     const data = await response.json()
     const loggedUser = true
     res.render('layouts/profile', { loggedUser, data })
+  }
+
+  async showActivities (req, res, next) {
+    const dataArr = []
+    const response = await fetch('https://gitlab.lnu.se/api/v4/events', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.#tokenData.access_token
+      }
+    })
+    const data = await response.json()
+    dataArr.push(...data)
+    console.log(data)
+    const loggedUser = true
+    res.render('layouts/activities', { loggedUser, dataArr })
   }
  }

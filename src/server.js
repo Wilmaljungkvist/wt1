@@ -70,6 +70,7 @@ try {
 
   app.use('/', router)
 
+  // TODO: GLÖM INTE BRA FELHANTERING. 
   app.use((err, req, res, next) => {
     if (err.status === 404) {
       return res

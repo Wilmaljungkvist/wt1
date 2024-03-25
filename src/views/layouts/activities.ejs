@@ -1,0 +1,21 @@
+<div class="activities">
+    <h1>Activities</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>Action name</th>
+            <th>Created at</th>
+            <th>Target title</th>
+            <th>Target type</th>
+        </tr>
+    </thead>
+    <% for (activity of dataArr) { %>
+        <tr>
+            <td><%= activity.action_name %></td>
+            <td><%= activity.created_at %></td>
+            <td><%= activity.target_title %></td>
+            <td><%= activity.target_type %></td>
+        </tr>
+      <% } %>
+    </table>
+</div>
