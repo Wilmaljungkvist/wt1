@@ -80,4 +80,42 @@
   img {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
+
+
+
+  .activities {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .activities h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .activities table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .activities th,
+  .activities td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .activities th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .activities tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .activities tbody tr:hover {
+    background-color: #e0e0e0;
+  }
   

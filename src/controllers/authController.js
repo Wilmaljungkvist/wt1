@@ -68,19 +68,39 @@
     res.render('layouts/profile', { loggedUser, data })
   }
 
-  async showActivities (req, res, next) {
+  async showActivities(req, res, next) {
     const dataArr = []
-    const response = await fetch('https://gitlab.lnu.se/api/v4/events', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.#tokenData.access_token
+    let page = 1
+    let totalCount = 0
+  
+    while (dataArr.length < 101) {
+      console.log(totalCount)
+      const response = await fetch(`https://gitlab.lnu.se/api/v4/events?page=${page}&per_page=100`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.#tokenData.access_token
+        }
+      })
+  
+      const data = await response.json()
+  
+      if (data.length === 0) {
+        break
       }
-    })
-    const data = await response.json()
-    dataArr.push(...data)
-    console.log(data)
+  
+      dataArr.push(...data)
+      totalCount += data.length
+      page++
+    }
+  
     const loggedUser = true
-    res.render('layouts/activities', { loggedUser, dataArr })
+    if (dataArr.length > 101) {
+      const latestActivities = dataArr.slice(0, 101)
+      res.render('layouts/activities', { loggedUser, latestActivities })
+    } else {
+      const latestActivities = dataArr
+      res.render('layouts/activities', { loggedUser, latestActivities })
+    }
   }
  }
