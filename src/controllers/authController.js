@@ -67,7 +67,6 @@
       }
     })
     const data = await response.json()
-    console.log(data)
     const loggedUser = true
     res.render('layouts/profile', { loggedUser, data })
   }
@@ -159,6 +158,9 @@
   `
 
     const data = await graphQLClient.request(query)
+    data.currentUser.groups.nodes.forEach(group => {
+      console.log(group.avatarUrl);
+    })
     const loggedUser = true
       res.render('layouts/projects', { loggedUser, data })
   }

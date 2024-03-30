@@ -4,7 +4,7 @@
     <div class="group-wrapper">
       <div class="group-header">
         <% if (group.avatarUrl !== null) { %>
-          <img src="https://gitlab.lnu.se/<%= group.avatarUrl %>" alt="Group avatar" width="25" height="25" crossorigin="true">
+          <img src="<%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;"/>
         <% } %>
         <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
         <span class="grey"><%= group.fullPath %></span>
