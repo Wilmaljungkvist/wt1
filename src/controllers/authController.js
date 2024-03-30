@@ -118,34 +118,35 @@
     })
 
     const query = gql`
-  query {
-    currentUser {
-      groups(first: 6) {
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
-        nodes {
-          id
-          name
-          fullPath
-          avatarUrl
-          path
-          projects(first: 10, includeSubgroups: true) {
-            nodes {
-              id
-              name
-              fullPath
-              avatarUrl
-              path
-              repository {
-                tree {
-                  lastCommit {
-                    authoredDate
-                    author {
-                      name
-                      username
-                      avatarUrl
+    query {
+      currentUser {
+        groups {
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            id
+            name
+            fullPath
+            avatarUrl
+            path
+            projects {
+              nodes {
+                id
+                name
+                fullPath
+                avatarUrl
+                path
+                repository {
+                  tree {
+                    lastCommit {
+                      authoredDate
+                      author {
+                        name
+                        username
+                        avatarUrl
+                      }
                     }
                   }
                 }
@@ -155,11 +156,9 @@
         }
       }
     }
-  }
-`
+  `
 
     const data = await graphQLClient.request(query)
-    console.log(data)
     const loggedUser = true
       res.render('layouts/projects', { loggedUser, data })
   }

@@ -1,6 +1,6 @@
 <div class=" ">
   <h1>Group with projects</h1>
-  <% data.currentUser.groups.nodes.slice(0, 3).forEach(function(group) { %>
+  <% data.currentUser.groups.nodes.forEach(function(group) { %>
     <div class="group-wrapper">
       <div class="group-header">
         <% if (group.avatarUrl !== null) { %>
@@ -18,7 +18,7 @@
           </tr>
         </thead>
         <tbody>
-          <% group.projects.nodes.slice(0, 5).forEach(function(project) { %>
+          <% group.projects.nodes.forEach(function(project) { %>
             <tr>
               <td class="project-info">
                 <% if (project.avatarUrl !== null) { %>
