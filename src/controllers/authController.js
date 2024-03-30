@@ -100,12 +100,9 @@
       page++
     }
   
-    const loggedUser = true
+    const loggedUser = true 
     if (dataArr.length > 101) {
       const latestActivities = dataArr.slice(0, 101)
-      for( let i = 0; latestActivities.length > i; i++) {
-        console.log(i + latestActivities[i].author_username)
-      }
       res.render('layouts/activities', { loggedUser, latestActivities })
     } else {
       const latestActivities = dataArr
@@ -121,34 +118,34 @@
     })
 
     const query = gql`
-    query {
-      currentUser {
-        groups(first: 6) {
-          pageInfo {
-            endCursor
-            hasNextPage
-          }
-          nodes {
-            id
-            name
-            fullPath
-            avatarUrl
-            path
-              projects(first: 10, includeSubgroups: true) {
-                nodes {
-                    id
-                    name
-                    fullPath
-                    avatarUrl
-                    path
-                    repository {tree {lastCommit {authoredDate author {name username avatarUrl}}}}
-                  projectMembers {       
-                    nodes {
-                      createdBy {
-                        name
-                        avatarUrl
-                        username
-                      }
+  query {
+    currentUser {
+      groups(first: 6) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes {
+          id
+          name
+          fullPath
+          avatarUrl
+          path
+          projects(first: 10, includeSubgroups: true) {
+            nodes {
+              id
+              name
+              fullPath
+              avatarUrl
+              path
+              repository {
+                tree {
+                  lastCommit {
+                    authoredDate
+                    author {
+                      name
+                      username
+                      avatarUrl
                     }
                   }
                 }
@@ -157,12 +154,13 @@
           }
         }
       }
-    `
+    }
+  }
+`
 
-    const response = await graphQLClient.request(query)
-
-    console.log(response)
+    const data = await graphQLClient.request(query)
+    console.log(data)
     const loggedUser = true
-      res.render('layouts/projects', { loggedUser })
+      res.render('layouts/projects', { loggedUser, data })
   }
  }

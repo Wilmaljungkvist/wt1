@@ -1,3 +1,58 @@
-<div class="projects">
-    <h1>Groups with projects</h1>
+<div class=" ">
+  <h1>Group with projects</h1>
+  <% data.currentUser.groups.nodes.slice(0, 3).forEach(function(group) { %>
+    <div class="group-wrapper">
+      <div class="group-header">
+        <% if (group.avatarUrl !== null) { %>
+          <img src="https://gitlab.lnu.se/<%= group.avatarUrl %>" alt="Group avatar" width="25" height="25" crossorigin="true">
+        <% } %>
+        <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
+        <span class="grey"><%= group.fullPath %></span>
+      </div>
+      <table class="project-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Last commit</th>
+            <th>Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% group.projects.nodes.slice(0, 5).forEach(function(project) { %>
+            <tr>
+              <td class="project-info">
+                <% if (project.avatarUrl !== null) { %>
+                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="true">
+                <% } %>
+                <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
+                <span class="grey small"><%= project.fullPath %></span>
+              </td>
+              <td class="project-info">
+                <% if (project.repository.tree.lastCommit !== null) { %>
+                  <p><%= project.repository.tree.lastCommit.authoredDate.substring(0, 19).replace('T', ' ') %></p>
+                <% } else { %>
+                  <p>No commit</p>
+                <% } %>
+              </td>
+              <td class="project-info">
+                <% if (project.repository.tree.lastCommit !== null && project.repository.tree.lastCommit.author !== null) { %>
+                  <span>
+                    <% if (project.repository.tree.lastCommit.author.avatarUrl !== null) { %>
+                      <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Author avatar" width="25" height="25" crossorigin="true">
+                    <% } %>
+                    <%= project.repository.tree.lastCommit.author.username %>
+                  </span>
+                <% } else { %>
+                  <p>No author</p>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
+  <% }) %>
+  <% if (data.currentUser.groups.nodes.length > 3) { %>
+    <p>Properly provide information about groups</p>
+  <% } %>
+</div>
