@@ -22,7 +22,7 @@
             <tr>
               <td class="project-info">
                 <% if (project.avatarUrl !== null) { %>
-                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="true">
+                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25"/>
                 <% } %>
                 <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
                 <span class="grey small"><%= project.fullPath %></span>
@@ -38,7 +38,7 @@
                 <% if (project.repository.tree.lastCommit !== null && project.repository.tree.lastCommit.author !== null) { %>
                   <span>
                     <% if (project.repository.tree.lastCommit.author.avatarUrl !== null) { %>
-                      <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Author avatar" width="25" height="25" crossorigin="true">
+                      <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Author avatar" width="25" height="25"/>
                     <% } %>
                     <%= project.repository.tree.lastCommit.author.username %>
                   </span>

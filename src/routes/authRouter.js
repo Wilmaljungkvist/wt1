@@ -16,5 +16,6 @@
  router.get('/activities', (req, res, next) => resolveAuthController(req).showActivities(req, res, next))
  router.get('/group-projects', (req, res, next) => resolveAuthController(req).groupProjects(req, res, next))
  router.get('/oauth/callback', (req, res, next) => resolveAuthController(req).handleAuthorization(req, res, next))
+ router.get('/logout', (req, res, next) => resolveAuthController(req).handleLogout(req, res, next))
 
  

@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import '@lnu/json-js-cycle'
 import express from 'express'
 import helmet from 'helmet'
-import cors from 'cors'
+import cors from 'cors' 
 
 import { container } from './config/bootstrap.js'
 import expressLayouts from 'express-ejs-layouts'
@@ -24,7 +24,7 @@ try {
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'img-src': ["'self'", 'https://secure.gravatar.com',  'https://gitlab.lnu.se'],
+        'img-src': ["'self'", 'https://secure.gravatar.com', 'https://gitlab.lnu.se', 'http://gitlab.lnu.se'],
       },
     },
   }))
@@ -58,6 +58,8 @@ try {
   }
 
   app.use(session(sessionOptions))
+
+  app.use(cors())
 
   app.use((req, res, next) => {
     if (req.session.flash) {

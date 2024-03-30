@@ -157,11 +157,36 @@
     }
   `
 
-    const data = await graphQLClient.request(query)
-    data.currentUser.groups.nodes.forEach(group => {
-      console.log(group.avatarUrl);
+  const data = await graphQLClient.request(query)
+  data.currentUser.groups.nodes.forEach(group => {
+    group.projects.nodes.forEach(project => {
+      console.log(project.avatarUrl)
     })
+  })
     const loggedUser = true
       res.render('layouts/projects', { loggedUser, data })
+  }
+
+  async handleLogout (req, res, next) {
+    const body = {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      token: this.#tokenData.access_token
+    }
+
+    const response = await fetch('https://gitlab.lnu.se/oauth/revoke', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+
+    const data = await response.json()
+
+    console.log(data)
+
+    const loggedUser = true
+    res.render('home/index', { loggedUser })
   }
  }
