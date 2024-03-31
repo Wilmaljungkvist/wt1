@@ -24,8 +24,10 @@ try {
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'img-src': ["'self'", 'https://secure.gravatar.com', 'https://gitlab.lnu.se', 'http://gitlab.lnu.se'],
+        'img-src': ["'self'", '*.gravatar.com', 'gitlab.lnu.se', 'data:'],
       },
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: false
     },
   }))
   app.use(httpContext.middleware)

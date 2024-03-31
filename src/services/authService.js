@@ -24,7 +24,8 @@ export class AuthService {
 
     const contentType = response.headers.get('content-type')
     if (contentType && contentType.includes('application/json')) {
-      return response.json()
+      const data = await response.json()
+      return data
     } else {
       const htmlContent = await response.text()
       console.error('Error response from OAuth provider:', htmlContent)

@@ -36,12 +36,13 @@
    }
 
    async login (req, res, next) {
-    const scopes = ['read_user', 'read_api', 'read_repository']
+
+    const scopes = ['read_user', 'read_api', 'read_repository', 'write_registry', 'read_registry', 'api']
     // TODO: ADD TRY CATCH 
     const scope = scopes.join(' ')
     const gitlabAuthUrl = `http://gitlab.lnu.se/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${scope}`
 
-    console.log('Generated GitLab OAuth URL:', gitlabAuthUrl)
+    console.log(gitlabAuthUrl)
     res.redirect(gitlabAuthUrl)
    }
 
@@ -76,8 +77,6 @@
     let page = 1
     let totalCount = 0
   
-    // TODO: ADD TIME TO LATEST ACTIVE. 
-    // TODO: Avatar (including locally stored and served via gravatar.com).
     while (dataArr.length < 101) {
       console.log(totalCount)
       const response = await fetch(`https://gitlab.lnu.se/api/v4/events?page=${page}&per_page=100`, {
@@ -109,64 +108,103 @@
     }
   }
 
-  async groupProjects (req, res, next) {
+  async groupProjects(req, res, next) {
     const graphQLClient = new GraphQLClient('https://gitlab.lnu.se/api/graphql', {
-      headers: {
-        authorization: 'Bearer ' + this.#tokenData.access_token
-      }
-    })
+        headers: {
+            authorization: 'Bearer ' + this.#tokenData.access_token
+        }
+    });
 
     const query = gql`
-    query {
-      currentUser {
-        groups {
-          pageInfo {
-            endCursor
-            hasNextPage
-          }
-          nodes {
-            id
-            name
-            fullPath
-            avatarUrl
-            path
-            projects {
-              nodes {
-                id
-                name
-                fullPath
-                avatarUrl
-                path
-                repository {
-                  tree {
-                    lastCommit {
-                      authoredDate
-                      author {
-                        name
-                        username
-                        avatarUrl
-                      }
+        query {
+            currentUser {
+                groups {
+                    pageInfo {
+                        endCursor
+                        hasNextPage
                     }
-                  }
+                    nodes {
+                        id
+                        name
+                        fullPath
+                        avatarUrl
+                        path
+                        projects {
+                            nodes {
+                                id
+                                name
+                                fullPath
+                                avatarUrl
+                                path
+                                repository {
+                                    tree {
+                                        lastCommit {
+                                            authoredDate
+                                            author {
+                                                name
+                                                username
+                                                avatarUrl
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
+    `;
+
+    try {
+        const data = await graphQLClient.request(query);
+        
+        // Fetch and update group avatars
+        for (const group of data.currentUser.groups.nodes) {
+            if (group.avatarUrl !== null) {
+                const groupId = group.avatarUrl.match(/\/avatar\/(\d+)\//)[1];
+                const newGroupAvatarUrl = `https://gitlab.lnu.se/api/v4/groups/${groupId}/avatar`;
+                const response = await fetch(newGroupAvatarUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + this.#tokenData.access_token
+                    }
+                });
+                const imageBuffer = await response.buffer();
+                const base64Image = imageBuffer.toString('base64');
+                group.avatarUrl = base64Image;
+            }
+        }
+
+        // Fetch and update project avatars
+        for (const group of data.currentUser.groups.nodes) {
+            for (const project of group.projects.nodes) {
+                if (project.avatarUrl !== null) {
+                    const projectId = project.avatarUrl.match(/\/avatar\/(\d+)\//)[1];
+                    const newProjectAvatarUrl = `https://gitlab.lnu.se/api/v4/projects/${projectId}/avatar`;
+                    const response = await fetch(newProjectAvatarUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: 'Bearer ' + this.#tokenData.access_token
+                        }
+                    });
+                    const imageBuffer = await response.buffer();
+                    const base64Image = imageBuffer.toString('base64');
+                    project.avatarUrl = base64Image;
+                }
+            }
+        }
+
+        const loggedUser = true;
+        res.render('layouts/projects', { loggedUser, data });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-  `
-
-  const data = await graphQLClient.request(query)
-  data.currentUser.groups.nodes.forEach(group => {
-    group.projects.nodes.forEach(project => {
-      console.log(project.avatarUrl)
-    })
-  })
-    const loggedUser = true
-      res.render('layouts/projects', { loggedUser, data })
-  }
-
+}
+  
   async handleLogout (req, res, next) {
     const body = {
       client_id: process.env.CLIENT_ID,
@@ -184,7 +222,7 @@
 
     const data = await response.json()
 
-    console.log(data)
+    // CHECK IF LOGOUT IS CORRECT
 
     const loggedUser = true
     res.render('home/index', { loggedUser })

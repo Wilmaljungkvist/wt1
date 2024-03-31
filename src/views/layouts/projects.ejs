@@ -4,7 +4,7 @@
     <div class="group-wrapper">
       <div class="group-header">
         <% if (group.avatarUrl !== null) { %>
-          <img src="<%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;"/>
+          <img src="data:image/png;base64, <%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;"/>
         <% } %>
         <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
         <span class="grey"><%= group.fullPath %></span>
@@ -22,7 +22,7 @@
             <tr>
               <td class="project-info">
                 <% if (project.avatarUrl !== null) { %>
-                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25"/>
+                  <img src="data:image/png;base64, <%= project.avatarUrl %>" alt="Project avatar" width="25" height="25"/>
                 <% } %>
                 <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
                 <span class="grey small"><%= project.fullPath %></span>
