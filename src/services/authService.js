@@ -45,4 +45,32 @@ export class AuthService {
     const data = await response.json()
     return data
     }
+
+
+    async showActivities (accessToken)  {
+      const dataArr = []
+    let page = 1
+    let totalCount = 0
+  
+    while (dataArr.length < 101) {
+      const response = await fetch(`https://gitlab.lnu.se/api/v4/events?page=${page}&per_page=100`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        }
+      })
+  
+      const data = await response.json()
+  
+      if (data.length === 0) {
+        break
+      }
+  
+      dataArr.push(...data)
+      totalCount += data.length
+      page++
+    }
+    return dataArr
+    }
 }

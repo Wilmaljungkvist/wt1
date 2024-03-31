@@ -61,36 +61,13 @@
 
   async showProfile (req, res, next) {
     const data = await this.#service.showProfile(this.#tokenData.access_token)
+    console.log(data)
     const loggedUser = true
-    res.render('layouts/profile', { loggedUser, data })
+    res.render('layouts/profile', { loggedUse, data })
   }
 
-  async showActivities(req, res, next) {
-    const dataArr = []
-    let page = 1
-    let totalCount = 0
-  
-    while (dataArr.length < 101) {
-      console.log(totalCount)
-      const response = await fetch(`https://gitlab.lnu.se/api/v4/events?page=${page}&per_page=100`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + this.#tokenData.access_token
-        }
-      })
-  
-      const data = await response.json()
-  
-      if (data.length === 0) {
-        break
-      }
-  
-      dataArr.push(...data)
-      totalCount += data.length
-      page++
-    }
-  
+  async showActivities (req, res, next) {
+    const dataArr = await this.#service.showActivities(this.#tokenData.access_token)
     const loggedUser = true 
     if (dataArr.length > 101) {
       const latestActivities = dataArr.slice(0, 101)
