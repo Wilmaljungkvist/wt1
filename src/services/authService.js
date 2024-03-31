@@ -34,7 +34,15 @@ export class AuthService {
     }
 
 
-    async profile (accessToken) {
-
+    async showProfile (accessToken) {
+      const response = await fetch('https://gitlab.lnu.se/api/v4/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken
+      }
+    })
+    const data = await response.json()
+    return data
     }
 }

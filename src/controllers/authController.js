@@ -60,14 +60,7 @@
 }
 
   async showProfile (req, res, next) {
-    const response = await fetch('https://gitlab.lnu.se/api/v4/user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.#tokenData.access_token
-      }
-    })
-    const data = await response.json()
+    const data = await this.#service.showProfile(this.#tokenData.access_token)
     const loggedUser = true
     res.render('layouts/profile', { loggedUser, data })
   }
@@ -113,7 +106,7 @@
         headers: {
             authorization: 'Bearer ' + this.#tokenData.access_token
         }
-    });
+    })
 
     const query = gql`
         query {
