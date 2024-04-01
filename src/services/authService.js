@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import { GraphQLClient, gql } from 'graphql-request' 
 export class AuthService {
 
   async exchangeCodeForToken(code) {
@@ -75,11 +76,11 @@ export class AuthService {
     }
 
 
-    async handleLogout(token) {
+    async handleLogout(accessToken) {
       const body = {
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
-        token: token
+        token: accessToken
       }
   
       const response = await fetch('https://gitlab.lnu.se/oauth/revoke', {
@@ -92,5 +93,59 @@ export class AuthService {
   
       const data = await response.json()
       return data
+    }
+
+
+    async showGroupProjects (accessToken) {
+      const graphQLClient = new GraphQLClient('https://gitlab.lnu.se/api/graphql', {
+        headers: {
+            authorization: 'Bearer ' + accessToken
+        }
+    })
+
+    const query = gql`
+        query {
+            currentUser {
+                groups {
+                    pageInfo {
+                        endCursor
+                        hasNextPage
+                    }
+                    nodes {
+                        id
+                        name
+                        fullPath
+                        avatarUrl
+                        path
+                        projects {
+                            nodes {
+                                id
+                                name
+                                fullPath
+                                avatarUrl
+                                path
+                                repository {
+                                    tree {
+                                        lastCommit {
+                                            authoredDate
+                                            author {
+                                                name
+                                                username
+                                                avatarUrl
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    `
+
+        const data = await graphQLClient.request(query)
+        return data
+
     }
 }

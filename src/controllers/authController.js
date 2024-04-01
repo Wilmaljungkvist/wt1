@@ -4,7 +4,6 @@
  * @author Wilma Ljungkvist
  */
  import fetch from 'node-fetch'
- import { GraphQLClient, gql } from 'graphql-request' 
  /**
   * Encapsulates a controller.
   */
@@ -59,54 +58,7 @@
   }
 
   async groupProjects(req, res, next) {
-    const graphQLClient = new GraphQLClient('https://gitlab.lnu.se/api/graphql', {
-        headers: {
-            authorization: 'Bearer ' + this.#tokenData.access_token
-        }
-    })
-
-    const query = gql`
-        query {
-            currentUser {
-                groups {
-                    pageInfo {
-                        endCursor
-                        hasNextPage
-                    }
-                    nodes {
-                        id
-                        name
-                        fullPath
-                        avatarUrl
-                        path
-                        projects {
-                            nodes {
-                                id
-                                name
-                                fullPath
-                                avatarUrl
-                                path
-                                repository {
-                                    tree {
-                                        lastCommit {
-                                            authoredDate
-                                            author {
-                                                name
-                                                username
-                                                avatarUrl
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    `
-
-        const data = await graphQLClient.request(query)
+    const data = await this.#service.showGroupProjects(this.#tokenData.access_token)
         data.currentUser.groups.nodes.forEach(async group => {
           if (group.avatarUrl !== null) {
             const response = await fetch(group.avatarUrl, {
