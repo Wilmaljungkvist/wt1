@@ -16,9 +16,12 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async index (req, res, next) {
+   async index(req, res, next) {
     try {
-      const loggedUser = false
+      let loggedUser = false
+      if (req.session.accessToken) {
+        loggedUser = true
+      }
       res.render('home/index', { loggedUser })
     } catch (error) {
       console.error('Error occurred:', error)

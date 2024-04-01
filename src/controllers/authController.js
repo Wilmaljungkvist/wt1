@@ -17,24 +17,6 @@
   constructor(service) {
     this.#service = service
   }
-   /**
-    * Renders a view and sends the rendered HTML string as an HTTP response.
-    * index GET.
-    *
-    * @param {object} req - Express request object.
-    * @param {object} res - Express response object.
-    * @param {Function} next - Express next middleware function.
-    */
-   async index (req, res, next) {
-     try {
-       const loggedUser = true
-       res.render('home/index', { loggedUser })
-     } catch (error) {
-       console.error('Error occurred:', error)
-       res.status(404).send('Not found')
-     }
-   }
-
    async login (req, res, next) {
 
     const scopes = ['read_user', 'read_api', 'read_repository', 'write_registry', 'read_registry', 'api']
@@ -49,6 +31,7 @@
     try {
       const returnedcode = req.query.code
       this.#tokenData = await this.#service.exchangeCodeForToken(returnedcode)
+      req.session.accessToken = this.#tokenData.access_token
       const loggedUser = true
       res.render('home/index', { loggedUser })
     } catch (error) {
@@ -144,7 +127,9 @@
   
   async handleLogout (req, res, next) {
     const data = await this.#service.handleLogout(this.#tokenData.access_token)
-    const loggedUser = true
-    res.render('home/index', { loggedUser })
+    req.session.cookie.expires = new Date(0)
+req.session.cookie.maxAge = 0
+    await req.session.destroy()
+    res.redirect('/')
   }
  }
