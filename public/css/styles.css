@@ -120,12 +120,13 @@
     margin: 20px;
   }
   
-  .group-wrapper {
+  .group-container {
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
+
   .group-header {
     padding: 10px;
     background-color: #f2f2f2;
@@ -153,20 +154,47 @@
     margin-right: 10px;
   }
 
-  .group-path {
-    color: blue;
+  .group-path, .project-path {
+    margin-right: 10px; 
+    color: black;
+    font-weight: bold;
     text-decoration: none;
   }
   
-  .group-path:hover {
+  .group-path:hover, .project-path:hover {
     color: darkblue;
   }
 
-  .project-path {
-    color: blue;
-    text-decoration: none;
+  .group-avatar {
+    margin: 10px; 
   }
 
-  .project-path:hover {
-    color: darkblue;
+
+  .more {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .more-projects {
+    font-weight: bold;
+    margin: 10px; 
+    background-color: #CCC;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 300px; 
+  }
+  
+  .more-groups {
+    margin: 10px; 
+    background-color: #CCC;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 300px; 
+  }
+
+  .project-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
   }

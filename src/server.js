@@ -29,6 +29,15 @@ try {
       },
     },
   }))
+
+  const allowedOrgins = ['http://localhost:8080', 'https://gitlab.lnu.se', 'https://gitlab.lnu.se/uploads/-/system/group/avatar/38430/0.png']
+  app.use('*', cors({
+    origin: allowedOrgins,
+    credentials: true,
+    preflightContinue: true, 
+    optionsSuccessStatus: 204
+  }))
+  
   app.use(httpContext.middleware)
 
   app.set('view engine', 'ejs')
@@ -59,25 +68,6 @@ try {
   }
 
   app.use(session(sessionOptions))
-
-  const allowedOrgins = ['http://localhost:8080', 'https://gitlab.lnu.se', 'https://gitlab.lnu.se/uploads/-/system/group/avatar/38430/0.png']
-  app.use('*', cors({
-    origin: allowedOrgins,
-    credentials: true,
-    preflightContinue: true, 
-    optionsSuccessStatus: 204
-  }))
-
-
-  app.use((req, res, next) => {
-    if (req.session.flash) {
-      res.locals.flash = req.session.flash
-      delete req.session.flash
-    }
-
-    res.locals.baseURL = baseURL
-    next()
-  })
 
   app.use('/', router)
 

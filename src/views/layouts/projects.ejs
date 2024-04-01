@@ -3,11 +3,11 @@
   <% data.currentUser.groups.nodes.slice(0, 3).forEach(function(group) { %>
     <div class="group-container">
       <div class="group-header">
-        <% if (group.avatarUrl !== null) { %>
-          <img src="data:image/png;base64, <%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;" crossorigin="anonymous"/>
-        <% } %>
         <h2><a class="group-path" href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
         <span class="grey"><%= group.fullPath %></span>
+        <% if (group.avatarUrl !== null) { %>
+          <img src="data:image/png;base64, <%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;" crossorigin="anonymous" class="group-avatar"/>
+        <% } %>
       </div>
       <table class="project-table">
         <thead>
@@ -19,7 +19,7 @@
         </thead>
         <tbody>
           <% group.projects.nodes.slice(0, 5).forEach(function(project) { %>
-            <tr>
+            <tr class="project-container">
               <td class="project-info">
                 <% if (project.avatarUrl !== null) { %>
                   <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="anonymous"/>
@@ -51,11 +51,11 @@
         </tbody>
       </table>
       <% if (group.projects.nodes.length > 5) { %>
-        <p>There are more projects...</p>
+        <p class="more more-groups">There are more projects in this group, only showing 5......</p>
       <% } %>
     </div>
   <% }) %>
   <% if (data.currentUser.groups.nodes.length > 3) { %>
-    <p>There are more groups.....</p>
+    <p class="more more-projects">There are more groups linked to this user only showing 3....</p>
   <% } %>
 </div>
