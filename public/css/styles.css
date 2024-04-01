@@ -152,3 +152,21 @@
   .project-info img {
     margin-right: 10px;
   }
+
+  .group-path {
+    color: blue;
+    text-decoration: none;
+  }
+  
+  .group-path:hover {
+    color: darkblue;
+  }
+
+  .project-path {
+    color: blue;
+    text-decoration: none;
+  }
+
+  .project-path:hover {
+    color: darkblue;
+  }

@@ -1,12 +1,12 @@
 <div class=" ">
   <h1>Group with projects</h1>
   <% data.currentUser.groups.nodes.slice(0, 3).forEach(function(group) { %>
-    <div class="group-wrapper">
+    <div class="group-container">
       <div class="group-header">
         <% if (group.avatarUrl !== null) { %>
-          <img src="data:image/png;base64, <%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;" crossorigin="true"/>
+          <img src="data:image/png;base64, <%= group.avatarUrl %>" alt="Group avatar" style="width: 25px; height: 25px;" crossorigin="anonymous"/>
         <% } %>
-        <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
+        <h2><a class="group-path" href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
         <span class="grey"><%= group.fullPath %></span>
       </div>
       <table class="project-table">
@@ -22,9 +22,9 @@
             <tr>
               <td class="project-info">
                 <% if (project.avatarUrl !== null) { %>
-                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="true"/>
+                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="anonymous"/>
                 <% } %>
-                <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
+                <p><a class="project-path" href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
                 <span class="grey small"><%= project.fullPath %></span>
               </td>
               <td class="project-info">
@@ -56,6 +56,6 @@
     </div>
   <% }) %>
   <% if (data.currentUser.groups.nodes.length > 3) { %>
-    <p>There are more groups</p>
+    <p>There are more groups.....</p>
   <% } %>
 </div>
