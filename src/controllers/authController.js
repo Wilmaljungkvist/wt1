@@ -1,5 +1,5 @@
 /**
- * Home controller.
+ * auth controller.
  *
  * @author Wilma Ljungkvist
  */
@@ -9,6 +9,7 @@
   */
  export class AuthController {
 
+  #loggedIn
   #service
   #tokenData
 
@@ -31,8 +32,8 @@
       const returnedcode = req.query.code
       this.#tokenData = await this.#service.exchangeCodeForToken(returnedcode)
       req.session.accessToken = this.#tokenData.access_token
-      const loggedUser = true
-      res.render('home/index', { loggedUser })
+      this.#loggedIn = true
+      res.redirect('/')
     } catch (error) {
       console.error('Error occurred:', error)
       res.status(500).send('Internal Server Error')
@@ -41,13 +42,13 @@
 
   async showProfile (req, res, next) {
     const data = await this.#service.showProfile(this.#tokenData.access_token)
-    const loggedUser = true
+    const loggedUser = this.#loggedIn
     res.render('layouts/profile', { loggedUser, data })
   }
 
   async showActivities (req, res, next) {
     const dataArr = await this.#service.showActivities(this.#tokenData.access_token)
-    const loggedUser = true 
+    const loggedUser = this.#loggedIn
     if (dataArr.length > 101) {
       const latestActivities = dataArr.slice(0, 101)
       res.render('layouts/activities', { loggedUser, latestActivities })
@@ -73,14 +74,13 @@
           }
       })
       
-        const loggedUser = true
+        const loggedUser = this.#loggedIn
         res.render('layouts/projects', { loggedUser, data })  
 }
   
   async handleLogout (req, res, next) {
     const data = await this.#service.handleLogout(this.#tokenData.access_token)
-    req.session.cookie.expires = new Date(0)
-req.session.cookie.maxAge = 0
+    this.#loggedIn = false
     await req.session.destroy()
     res.redirect('/')
   }
