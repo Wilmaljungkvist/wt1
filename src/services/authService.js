@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from 'graphql-request'
 export class AuthService {
 
   async exchangeCodeForToken(code) {
-    // TODO: ADD SECRET STRING FOR LOGIN/KEY!
+    // TODO: ADD SECRET STRING
     const params = new URLSearchParams()
     params.append('client_id', process.env.CLIENT_ID)
     params.append('client_secret', process.env.CLIENT_SECRET)
