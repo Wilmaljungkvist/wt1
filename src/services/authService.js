@@ -57,7 +57,7 @@ export class AuthService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken
+          authorization: 'Bearer ' + accessToken
         }
       })
   
@@ -72,5 +72,25 @@ export class AuthService {
       page++
     }
     return dataArr
+    }
+
+
+    async handleLogout(token) {
+      const body = {
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        token: token
+      }
+  
+      const response = await fetch('https://gitlab.lnu.se/oauth/revoke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+  
+      const data = await response.json()
+      return data
     }
 }

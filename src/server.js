@@ -24,10 +24,9 @@ try {
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'img-src': ["'self'", '*.gravatar.com', 'gitlab.lnu.se', 'data:'],
+        'script-src': ["'self'"],
+        'img-src': ["'self'", '*.gravatar.com', 'gitlab.lnu.se', 'data:', 'http://localhost:8080'],
       },
-      crossOriginEmbedderPolicy: false,
-      crossOriginResourcePolicy: false
     },
   }))
   app.use(httpContext.middleware)
@@ -50,7 +49,7 @@ try {
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 12,
-      sameSite: 'strict'
+      sameSite: 'lax'
     }
   }
 
@@ -61,7 +60,14 @@ try {
 
   app.use(session(sessionOptions))
 
-  app.use(cors())
+  const allowedOrgins = ['http://localhost:8080', 'https://gitlab.lnu.se', 'https://gitlab.lnu.se/uploads/-/system/group/avatar/38430/0.png']
+  app.use('*', cors({
+    origin: allowedOrgins,
+    credentials: true,
+    preflightContinue: true, 
+    optionsSuccessStatus: 204
+  }))
+
 
   app.use((req, res, next) => {
     if (req.session.flash) {

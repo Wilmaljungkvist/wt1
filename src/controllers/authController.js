@@ -4,7 +4,7 @@
  * @author Wilma Ljungkvist
  */
  import fetch from 'node-fetch'
- import { GraphQLClient, gql } from 'graphql-request'
+ import { GraphQLClient, gql } from 'graphql-request' 
  /**
   * Encapsulates a controller.
   */
@@ -41,8 +41,6 @@
     // TODO: ADD TRY CATCH 
     const scope = scopes.join(' ')
     const gitlabAuthUrl = `http://gitlab.lnu.se/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${scope}`
-
-    console.log(gitlabAuthUrl)
     res.redirect(gitlabAuthUrl)
    }
 
@@ -52,7 +50,7 @@
       const returnedcode = req.query.code
       this.#tokenData = await this.#service.exchangeCodeForToken(returnedcode)
       const loggedUser = true
-       res.render('home/index', { loggedUser })
+      res.render('home/index', { loggedUser })
     } catch (error) {
       console.error('Error occurred:', error)
       res.status(500).send('Internal Server Error')
@@ -61,9 +59,8 @@
 
   async showProfile (req, res, next) {
     const data = await this.#service.showProfile(this.#tokenData.access_token)
-    console.log(data)
     const loggedUser = true
-    res.render('layouts/profile', { loggedUse, data })
+    res.render('layouts/profile', { loggedUser, data })
   }
 
   async showActivities (req, res, next) {
@@ -124,76 +121,29 @@
                 }
             }
         }
-    `;
+    `
 
-    try {
-        const data = await graphQLClient.request(query);
-        
-        // Fetch and update group avatars
-        for (const group of data.currentUser.groups.nodes) {
-            if (group.avatarUrl !== null) {
-                const groupId = group.avatarUrl.match(/\/avatar\/(\d+)\//)[1];
-                const newGroupAvatarUrl = `https://gitlab.lnu.se/api/v4/groups/${groupId}/avatar`;
-                const response = await fetch(newGroupAvatarUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: 'Bearer ' + this.#tokenData.access_token
-                    }
-                });
-                const imageBuffer = await response.buffer();
-                const base64Image = imageBuffer.toString('base64');
-                group.avatarUrl = base64Image;
-            }
-        }
-
-        // Fetch and update project avatars
-        for (const group of data.currentUser.groups.nodes) {
-            for (const project of group.projects.nodes) {
-                if (project.avatarUrl !== null) {
-                    const projectId = project.avatarUrl.match(/\/avatar\/(\d+)\//)[1];
-                    const newProjectAvatarUrl = `https://gitlab.lnu.se/api/v4/projects/${projectId}/avatar`;
-                    const response = await fetch(newProjectAvatarUrl, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: 'Bearer ' + this.#tokenData.access_token
-                        }
-                    });
-                    const imageBuffer = await response.buffer();
-                    const base64Image = imageBuffer.toString('base64');
-                    project.avatarUrl = base64Image;
-                }
-            }
-        }
-
-        const loggedUser = true;
-        res.render('layouts/projects', { loggedUser, data });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
-    }
+        const data = await graphQLClient.request(query)
+        data.currentUser.groups.nodes.forEach(async group => {
+          if (group.avatarUrl !== null) {
+            const response = await fetch(group.avatarUrl, {
+              method: 'GET',
+              headers: {
+                'Authorization': 'Bearer ' + this.#tokenData.access_token
+              }
+            })
+            const image = await response.text()
+            console.log(image)
+            console.log(group.avatarUrl)
+          }
+      })
+      
+        const loggedUser = true
+        res.render('layouts/projects', { loggedUser, data })  
 }
   
   async handleLogout (req, res, next) {
-    const body = {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      token: this.#tokenData.access_token
-    }
-
-    const response = await fetch('https://gitlab.lnu.se/oauth/revoke', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-
-    const data = await response.json()
-
-    // CHECK IF LOGOUT IS CORRECT
-
+    const data = await this.#service.handleLogout(this.#tokenData.access_token)
     const loggedUser = true
     res.render('home/index', { loggedUser })
   }
